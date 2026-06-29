@@ -1,0 +1,63 @@
+# PhysicsRishi Vision
+
+PhysicsRishi is a premium Physics learning platform for JEE Main and NEET aspirants.
+
+## Mission
+
+Build disciplined learners through structured study rather than random content consumption.
+
+## Learning Flow
+
+Dashboard
+→ Physics Roadmap
+→ Chapter
+→ Mind Map
+→ Concept Cards
+→ Formula Sheet
+→ NEET Examples
+→ JEE Main Examples
+→ Concept Test (15 Questions)
+→ Competition Test (50 Questions)
+→ Unlock Next Chapter
+
+## Course
+
+Class 11 Physics
+15 Chapters
+
+Class 12 Physics
+15 Chapters
+
+## Rules
+
+Students cannot skip chapters.
+
+Next chapter unlocks only after passing the previous chapter.
+
+Class 12 unlocks after completing Class 11.
+
+## Dashboard
+
+Show:
+
+* Study Streak
+* Sincerity Score
+* Performance Score
+* Current Chapter
+* Progress %
+
+## Design
+
+Minimal
+Fast
+Mobile Friendly
+Dark Theme
+Premium Feel
+
+## Long-term Features
+
+* AI Mentor
+* Subscription System
+* Parent Dashboard
+* Analytics
+* Adaptive Practice

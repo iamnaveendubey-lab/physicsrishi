@@ -9,11 +9,16 @@ import {
   updateDoc 
 } from "firebase/firestore";
 import { db, isMockFirebase } from "./firebase";
+import { getRegistryDbRecords, getChapterMeta } from "@/data/chapters/registry";
+import type { ClassLevel } from "@/types/chapter";
 
 export interface PhysicsChapter {
   chapterId: number;
   title: string;
   order: number;
+  classLevel: ClassLevel;
+  classOrder: number;
+  slug: string;
 }
 
 export interface ChapterProgress {
@@ -28,12 +33,20 @@ export interface ChapterProgress {
   chapterCompleted: boolean;
 }
 
-const DEFAULT_CHAPTERS: PhysicsChapter[] = [
-  { chapterId: 1, title: "Units and Measurements", order: 1 },
-  { chapterId: 2, title: "Projectile Motion & Vectors", order: 2 },
-  { chapterId: 3, title: "Laws of Motion & Constraints", order: 3 },
-  { chapterId: 4, title: "Electrostatic Potential & Flux", order: 4 },
-];
+const DEFAULT_CHAPTERS: PhysicsChapter[] = getRegistryDbRecords();
+
+function enrichChapterFromRegistry(ch: PhysicsChapter): PhysicsChapter {
+  const meta = getChapterMeta(ch.chapterId);
+  if (!meta) return ch;
+  return {
+    chapterId: meta.globalId,
+    title: meta.title,
+    order: meta.globalId,
+    classLevel: meta.classLevel,
+    classOrder: meta.classOrder,
+    slug: meta.slug,
+  };
+}
 
 /**
  * Seeds default chapters if the physicsChapters database is empty.
@@ -70,7 +83,8 @@ export async function seedChaptersIfEmpty(): Promise<void> {
 export async function getChapters(): Promise<PhysicsChapter[]> {
   if (isMockFirebase) {
     const stored = localStorage.getItem("physicsrishi_mock_chapters");
-    return stored ? JSON.parse(stored) : DEFAULT_CHAPTERS;
+    const parsed: PhysicsChapter[] = stored ? JSON.parse(stored) : DEFAULT_CHAPTERS;
+    return parsed.map(enrichChapterFromRegistry).sort((a, b) => a.order - b.order);
   }
 
   if (!db) return [];
@@ -79,7 +93,7 @@ export async function getChapters(): Promise<PhysicsChapter[]> {
     const snapshot = await getDocs(collection(db, "physicsChapters"));
     const list: PhysicsChapter[] = [];
     snapshot.forEach((d) => {
-      list.push(d.data() as PhysicsChapter);
+      list.push(enrichChapterFromRegistry(d.data() as PhysicsChapter));
     });
     return list.sort((a, b) => a.order - b.order);
   } catch (err) {

@@ -1,13 +1,7 @@
-export interface MCQ {
-  id: number;
-  question: string;
-  options: string[];
-  correctIndex: number;
-  explanation: string;
-}
+import type { MCQ, ChapterQuizzes } from "@/types/chapter";
+import { DEFAULT_QUIZZES } from "../../constants";
 
-// 15 MCQ questions for the Concept Test
-export const CONCEPT_QUESTIONS: MCQ[] = [
+const CONCEPT_QUESTIONS: MCQ[] = [
   {
     id: 1,
     question: "Which of the following is NOT a fundamental SI unit?",
@@ -115,8 +109,7 @@ export const CONCEPT_QUESTIONS: MCQ[] = [
   }
 ];
 
-// 50 MCQ questions for the Competition Test
-export const COMPETITION_QUESTIONS: MCQ[] = [];
+const COMPETITION_QUESTIONS: MCQ[] = [];
 
 // Helper function to dynamically populate the 50 Competition Questions
 // to maintain high-quality physics curriculum queries in code.
@@ -478,3 +471,9 @@ function generateCompetitionQuestions() {
 }
 
 generateCompetitionQuestions();
+
+export const unitsMeasurementsQuizzes: ChapterQuizzes = {
+  ...DEFAULT_QUIZZES,
+  concept: CONCEPT_QUESTIONS,
+  competition: COMPETITION_QUESTIONS,
+};
