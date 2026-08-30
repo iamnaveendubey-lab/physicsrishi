@@ -1,0 +1,342 @@
+# PhysicsRishi Chapter Generation Schema
+
+Version: 1.0
+Status: Draft
+Owner: Founder + CTO
+
+---
+
+# 1. Purpose
+
+Every PhysicsRishi chapter must ultimately produce a valid
+`ChapterContentBundle`.
+
+The existing application consumes this structure.
+
+The AI generation engine must therefore generate content compatible
+with the existing application architecture.
+
+The generator must NOT create a new incompatible chapter format.
+
+---
+
+# 2. Chapter Structure
+
+Every chapter contains:
+
+- Meta
+- Mind Map
+- Concepts
+- Formulas
+- Examples
+- Concept Quiz
+- Competition Test
+
+Future versions may add:
+
+- Reflection Metadata
+- Self Checks
+- AI Mentor Metadata
+
+These additions must remain backward compatible.
+
+---
+
+# 3. Meta
+
+Required fields:
+
+- globalId
+- classLevel
+- classOrder
+- title
+- slug
+- contentStatus
+
+Example:
+
+{
+  "globalId": 2,
+  "classLevel": 11,
+  "classOrder": 2,
+  "title": "Motion in a Straight Line",
+  "slug": "motion-in-a-straight-line",
+  "contentStatus": "complete"
+}
+
+---
+
+# 4. Mind Map
+
+Structure:
+
+{
+  "centerLabel": "Chapter Title",
+  "centerSubtitle": "Class 11 · Chapter 2",
+  "nodes": []
+}
+
+Every node requires:
+
+- id
+- label
+- x
+- y
+- details
+
+The generated mind map must represent the conceptual structure
+of the chapter.
+
+Maximum primary nodes:
+
+10
+
+The mind map must support rapid revision.
+
+---
+
+# 5. Concepts
+
+Current application structure:
+
+{
+  "id": "concept-id",
+  "title": "Concept Title",
+  "overview": "Short overview",
+  "body": "Core explanation"
+}
+
+Future Gold Standard structure will expand the concept object to include:
+
+- why
+- definition
+- explanation
+- visualization
+- memoryHack
+- examTip
+- commonMistake
+- revisionSummary
+- selfCheck
+
+The transition must preserve compatibility with the existing UI.
+
+---
+
+# 6. Formulas
+
+Every formula requires:
+
+- id
+- title
+- code
+
+Formula content must be:
+
+- scientifically correct
+- dimensionally verified
+- symbolically correct
+- relevant to JEE/NEET
+
+No fabricated formulas.
+
+---
+
+# 7. Examples
+
+Every example requires:
+
+- id
+- exam
+- question
+- options
+- correct
+- solution
+
+Target:
+
+5–10 examples per chapter.
+
+Examples should represent different levels of thinking.
+
+Preferred distribution:
+
+- Basic application
+- Standard exam problem
+- Conceptual trap
+- Multi-step problem
+- High-level challenge
+
+---
+
+# 8. Concept Quiz
+
+Target:
+
+15 questions.
+
+Purpose:
+
+Check conceptual understanding before the main test.
+
+Each MCQ requires:
+
+- id
+- question
+- options
+- correctIndex
+- explanation
+
+Difficulty:
+
+Easy → Moderate → Exam level
+
+Questions must not be trivial.
+
+---
+
+# 9. Competition Test
+
+Target:
+
+50 questions.
+
+Purpose:
+
+Measure actual exam readiness.
+
+Difficulty distribution:
+
+20% Easy
+50% Moderate
+30% Difficult
+
+Questions should include:
+
+- Conceptual
+- Numerical
+- Multi-step
+- Application
+- Exam-trap questions
+
+Every question requires:
+
+- id
+- question
+- options
+- correctIndex
+- explanation
+
+---
+
+# 10. Question Quality
+
+Every question must have:
+
+- One unambiguous correct answer
+- Plausible distractors
+- Correct numerical values
+- Verified units
+- Verified dimensions where applicable
+- Exam relevance
+- Appropriate difficulty
+
+Avoid:
+
+- Trivia
+- Pure definition recall
+- Obviously wrong distractors
+- Repeated questions
+- Artificially complicated calculations
+
+---
+
+# 11. Future Reflection Metadata
+
+The generation engine should eventually attach hidden metadata
+to every assessment question:
+
+- concept
+- subConcept
+- difficulty
+- expectedTime
+- mistakeType
+- learningObjective
+
+This metadata is intended for the Reflection Engine.
+
+It should not necessarily be visible to students.
+
+---
+
+# 12. Generation Principle
+
+AI generates content.
+
+Physics expert validates content.
+
+Application validates structure.
+
+Only validated content becomes live.
+
+Pipeline:
+
+AI Generation
+    ↓
+Schema Validation
+    ↓
+Physics Review
+    ↓
+Application Test
+    ↓
+Publish
+
+---
+
+# 13. Quality Gate
+
+A chapter cannot be marked `complete` merely because
+the AI generated all required fields.
+
+The chapter must pass:
+
+- Structural validation
+- Physics accuracy review
+- Question quality review
+- Duplicate detection
+- Difficulty review
+- UI rendering test
+
+Target quality:
+
+95/100 or higher.
+
+---
+
+# 14. Golden Rule
+
+The generator must never change the application's architecture
+just to accommodate generated content.
+
+Generated content must conform to the application's
+approved content contract.
+
+---
+
+# 15. Long-Term Objective
+
+The final system should allow:
+
+Chapter Specification
+        ↓
+AI Generation
+        ↓
+Validated ChapterContentBundle
+        ↓
+Human Academic Review
+        ↓
+Automatic Registration
+        ↓
+PhysicsRishi
+
+The goal is to make production of Chapters 2–29
+repeatable, scalable and academically reliable.

@@ -32,11 +32,29 @@ export interface MindMapConfig {
   nodes: MindMapNode[];
 }
 
+export interface SelfCheck {
+  question: string;
+  options: string[];
+}
+
 export interface ConceptCard {
   id: string;
   title: string;
+
+  // Existing Chapter 1 fields
   overview: string;
   body: string;
+
+  // Gold Standard fields
+  why?: string;
+  definition?: string;
+  explanation?: string;
+  visualization?: string;
+  memoryHack?: string;
+  examTip?: string;
+  commonMistake?: string;
+  revisionSummary?: string;
+  selfCheck?: SelfCheck;
 }
 
 export interface FormulaEntry {

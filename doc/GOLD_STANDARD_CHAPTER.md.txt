@@ -1,0 +1,582 @@
+# PhysicsRishi Gold Standard Chapter Specification
+Version: 1.0
+Status: Product Constitution
+Owner: Founder + CTO
+
+---
+
+# 1. Product Philosophy
+
+PhysicsRishi is NOT another teaching platform.
+
+PhysicsRishi is an AI-powered Physics Revision & Assessment System built for serious JEE and NEET aspirants.
+
+Our objective is NOT to teach Physics.
+
+Our objective is to answer one question:
+
+> "Am I really ready for the exam?"
+
+Every chapter must help the student:
+
+• Revise Faster
+• Think Better
+• Detect Weaknesses
+• Build Confidence
+• Improve Performance
+
+The chapter should feel like a personal mentor rather than a digital textbook.
+
+---
+
+# 2. Golden Principles
+
+Every chapter MUST satisfy these principles.
+
+1. Maximum learning in minimum time.
+
+2. No unnecessary theory.
+
+3. Every screen must have one objective.
+
+4. Every concept must increase exam performance.
+
+5. Every question must teach thinking.
+
+6. Reflection is more valuable than marks.
+
+7. AI Mentor should discuss mistakes, not repeat theory.
+
+---
+
+# 3. Student Journey
+
+Student enters chapter
+
+↓
+
+Learning Objective
+
+↓
+
+Interactive Mind Map
+
+↓
+
+Rapid Revision Concepts
+
+↓
+
+Formula Intelligence
+
+↓
+
+Thinking Examples
+
+↓
+
+Concept Quiz
+
+↓
+
+Challenge Test (50 Questions)
+
+↓
+
+Reflection Engine
+
+↓
+
+AI Mentor Discussion
+
+↓
+
+Personal Improvement Plan
+
+---
+
+# 4. Learning Objectives
+
+Duration:
+1 minute
+
+Student should immediately know:
+
+• What will I learn?
+• Why is this chapter important?
+• How many NEET/JEE questions come from this chapter?
+• Estimated completion time
+• Difficulty level
+
+Example
+
+After completing this chapter you will be able to
+
+✓ Understand SI Units
+✓ Solve Dimension Questions
+✓ Apply Significant Figures
+✓ Calculate Experimental Errors
+
+Estimated Time
+
+45–60 Minutes
+
+Expected Questions
+
+NEET: 2-3
+
+JEE Main: 2-3
+
+Difficulty
+
+★★☆☆☆
+
+---
+
+# 5. Interactive Mind Map
+
+Purpose
+
+Complete chapter revision in under 3 minutes.
+
+Rules
+
+Maximum 10 nodes
+
+Every node clickable.
+
+Every node opens a 30-second explanation.
+
+Never use paragraphs.
+
+Mind map must show relationships, not hierarchy.
+
+Example
+
+Units
+
+↓
+
+SI System
+
+↓
+
+Fundamental Units
+
+↓
+
+Derived Units
+
+↓
+
+Dimensions
+
+↓
+
+Errors
+
+↓
+
+Applications
+
+Quality Standard
+
+Student should revise entire chapter within 180 seconds.
+
+---
+
+# 6. Concept Cards
+
+Purpose
+
+Fast revision.
+
+NOT detailed teaching.
+
+Every concept card MUST contain
+
+1. Why is this concept important?
+
+2. One-line Definition
+
+3. Core Idea
+
+4. Visualization
+
+5. Memory Hack
+
+6. Exam Trick
+
+7. Common Mistake
+
+Maximum reading time
+
+60 seconds
+
+No long paragraphs.
+
+---
+
+# 7. Formula Intelligence
+
+Purpose
+
+Understand formulas instead of memorizing them.
+
+Every formula card contains
+
+Formula
+
+Meaning
+
+Variables
+
+SI Unit
+
+Dimensions
+
+When to use
+
+When NOT to use
+
+Shortcut
+
+Most Common Mistake
+
+Previous Year Frequency
+
+Memory Trick
+
+---
+
+# 8. Thinking Examples
+
+Purpose
+
+Teach thinking process.
+
+NOT solution writing.
+
+Each example follows
+
+Question
+
+↓
+
+Student's First Thought
+
+↓
+
+Why students make mistakes
+
+↓
+
+Correct Thinking
+
+↓
+
+Step-by-Step Solution
+
+↓
+
+Fast Method
+
+↓
+
+Exam Variation
+
+↓
+
+Takeaway
+
+Minimum
+
+5 examples
+
+Maximum
+
+10 examples
+
+---
+
+# 9. Concept Quiz
+
+Purpose
+
+Check conceptual understanding.
+
+Questions
+
+15
+
+Difficulty
+
+Easy → Moderate
+
+Immediate feedback
+
+Wrong answer must explain
+
+• Why wrong?
+
+• Which concept to revise?
+
+Every attempt generates different questions.
+
+---
+
+# 10. Challenge Test
+
+Purpose
+
+Simulate real examination.
+
+Questions
+
+50
+
+Time Bound
+
+Negative Marking
+
+Difficulty Distribution
+
+20% Easy
+
+50% Medium
+
+30% Difficult
+
+Question Types
+
+Concept
+
+Calculation
+
+Assertion-Reason
+
+Multi-step Thinking
+
+Every attempt should generate a different paper.
+
+---
+
+# 11. Reflection Engine
+
+This is the heart of PhysicsRishi.
+
+Reflection is more important than score.
+
+Student should receive
+
+Readiness Score
+
+Confidence Score
+
+Accuracy
+
+Speed
+
+Weak Concepts
+
+Strong Concepts
+
+Most Common Mistake
+
+Estimated Exam Readiness
+
+Recommended Revision Plan
+
+Estimated Revision Time
+
+Next Suggested Test
+
+Example
+
+Readiness
+
+84%
+
+Confidence
+
+★★★★☆
+
+Strong Areas
+
+✓ Dimensions
+
+✓ SI Units
+
+Weak Areas
+
+⚠ Significant Figures
+
+⚠ Error Analysis
+
+Recommended Action
+
+Review Significant Figures
+
+Retake Concept Quiz
+
+Attempt Challenge Test Again
+
+---
+
+# 12. AI Mentor
+
+AI Mentor starts AFTER reflection.
+
+Never begin with
+
+"How can I help?"
+
+Instead
+
+"I noticed that you lost 4 questions because of Significant Figures."
+
+Conversation should focus on
+
+Why mistakes happened
+
+Thinking process
+
+Mental models
+
+Confidence building
+
+Actionable improvement
+
+AI is a Performance Coach.
+
+Not a chatbot.
+
+---
+
+# 13. Chapter Completion Criteria
+
+A chapter is completed only when
+
+Mind Map explored
+
+Concepts completed
+
+Formula Sheet completed
+
+Examples completed
+
+Concept Quiz passed
+
+Challenge Test attempted
+
+Reflection generated
+
+AI Mentor discussion completed
+
+---
+
+# 14. Quality Standards
+
+Mind Map
+
+★★★★★
+
+Concept Cards
+
+★★★★★
+
+Formula Intelligence
+
+★★★★★
+
+Examples
+
+★★★★★
+
+Quiz Quality
+
+★★★★★
+
+Reflection
+
+★★★★★
+
+Nothing below 95/100 is accepted.
+
+---
+
+# 15. Chapter Quality Rubric
+
+Mind Map               15
+
+Concept Cards          20
+
+Formula Intelligence   10
+
+Examples               20
+
+Quiz                   20
+
+Reflection             15
+
+Total                 100
+
+Minimum acceptable
+
+95
+
+---
+
+# 16. AI Content Generation Rules
+
+Every chapter generated by AI MUST follow this specification.
+
+Output Format
+
+JSON
+
+Structure
+
+meta
+
+mindMap
+
+concepts
+
+formulas
+
+examples
+
+conceptQuiz
+
+challengeTest
+
+reflectionRules
+
+No chapter should violate this specification.
+
+---
+
+# 17. Product Vision
+
+PhysicsRishi should become the platform where students say
+
+"I don't study Physics here.
+
+I measure my readiness here."
+
+---
+
+# Founder Promise
+
+We will never compete by creating more content.
+
+We will compete by creating better thinking, better assessment, and greater confidence.
+
+Every feature must answer one question:
+
+"Will this help a student score more marks in less time?"
+
+If the answer is NO,
+
+we do not build it.

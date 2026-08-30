@@ -1,0 +1,563 @@
+# PhysicsRishi AI Content Generation Guide
+Version: 1.0
+Status: Engineering Specification
+Owner: Founder + CTO
+
+---
+
+# Purpose
+
+This document defines the standard procedure for generating PhysicsRishi chapters using Artificial Intelligence.
+
+The objective is NOT to generate random educational content.
+
+The objective is to generate premium, exam-oriented, revision-focused content that follows the PhysicsRishi Gold Standard Chapter Specification.
+
+Every generated chapter must be reviewed by a Physics subject expert before publishing.
+
+---
+
+# AI's Role
+
+AI is NOT the teacher.
+
+AI is NOT the author.
+
+AI is a content generation assistant.
+
+The final responsibility of academic correctness always belongs to the PhysicsRishi academic team.
+
+---
+
+# Primary Goal
+
+Generate a chapter that helps a serious JEE/NEET aspirant
+
+• Revise quickly
+
+• Understand deeply
+
+• Practice effectively
+
+• Detect weaknesses
+
+• Improve confidence
+
+The generated chapter must improve exam performance rather than increase reading time.
+
+---
+
+# Content Philosophy
+
+Never generate textbook-style content.
+
+Never copy NCERT.
+
+Never create unnecessarily long explanations.
+
+Every paragraph should help the student score more marks.
+
+Every screen should have only one objective.
+
+---
+
+# Chapter Generation Workflow
+
+Step 1
+
+Receive chapter metadata.
+
+Example
+
+Subject
+
+Physics
+
+Class
+
+11
+
+Chapter
+
+Units and Measurements
+
+Exam
+
+JEE + NEET
+
+Difficulty
+
+Easy
+
+Expected Weightage
+
+2 Questions
+
+---
+
+Step 2
+
+Generate Learning Objectives
+
+Output
+
+• Skills gained
+
+• Estimated study time
+
+• Expected exam questions
+
+• Difficulty level
+
+---
+
+Step 3
+
+Generate Interactive Mind Map
+
+Rules
+
+Maximum 10 nodes
+
+No decorative nodes
+
+Every node must answer
+
+"What should the student remember?"
+
+Each node must include
+
+Title
+
+30-second explanation
+
+Key takeaway
+
+---
+
+Step 4
+
+Generate Concept Cards
+
+Each concept card MUST contain
+
+Concept Name
+
+Why is it important?
+
+One-line definition
+
+Core explanation
+
+Visualization idea
+
+Memory trick
+
+Exam trick
+
+Common mistake
+
+Revision keywords
+
+Maximum reading time
+
+60 seconds
+
+---
+
+Step 5
+
+Generate Formula Intelligence
+
+Every formula card must contain
+
+Formula
+
+Meaning
+
+Variables
+
+Units
+
+Dimensions
+
+Applications
+
+Limitations
+
+Shortcut
+
+Memory trick
+
+Previous year importance
+
+---
+
+Step 6
+
+Generate Thinking Examples
+
+Number
+
+5–10
+
+Each example must contain
+
+Question
+
+Expected wrong thinking
+
+Correct thinking
+
+Step-by-step solution
+
+Shortcut
+
+Variation
+
+Exam takeaway
+
+---
+
+Step 7
+
+Generate Concept Quiz
+
+15 Questions
+
+Distribution
+
+40% Conceptual
+
+40% Numerical
+
+20% Analytical
+
+Rules
+
+Immediate feedback
+
+Concept mapping
+
+Randomizable
+
+Difficulty
+
+Easy → Moderate
+
+---
+
+Step 8
+
+Generate Challenge Test
+
+50 Questions
+
+Exam-level
+
+Distribution
+
+20% Easy
+
+50% Moderate
+
+30% Difficult
+
+Question Types
+
+Conceptual
+
+Numerical
+
+Assertion-Reason
+
+Multi-concept
+
+Every attempt should allow question randomization.
+
+---
+
+Step 9
+
+Generate Reflection Rules
+
+For every question AI must know
+
+Concept Tested
+
+Difficulty
+
+Mistake Type
+
+Learning Outcome
+
+This information is NOT shown to the student.
+
+It is used by Reflection Engine.
+
+---
+
+Step 10
+
+Generate AI Mentor Suggestions
+
+For every weak concept generate
+
+Why students fail
+
+Typical misconceptions
+
+Suggested revision sequence
+
+Motivational guidance
+
+Next action
+
+---
+
+# Writing Style
+
+Tone
+
+Professional
+
+Friendly
+
+Motivating
+
+Concise
+
+Never verbose.
+
+Never robotic.
+
+Never textbook-like.
+
+Language
+
+Simple English
+
+Physics terminology preserved
+
+No unnecessary jargon
+
+---
+
+# Visual Design Guidelines
+
+Every concept should fit on one screen.
+
+Use bullets instead of paragraphs.
+
+Prefer diagrams over text.
+
+Prefer tables over long explanations.
+
+Highlight formulas.
+
+Highlight exam tricks.
+
+Highlight common mistakes.
+
+---
+
+# Content Quality Checklist
+
+Before accepting generated content verify
+
+✓ Scientifically correct
+
+✓ JEE relevant
+
+✓ NEET relevant
+
+✓ NCERT aligned
+
+✓ Numerically accurate
+
+✓ Formula verified
+
+✓ Unit verified
+
+✓ Dimension verified
+
+✓ Grammar checked
+
+✓ Duplicate free
+
+---
+
+# Quiz Quality Standards
+
+Questions must test
+
+Understanding
+
+Application
+
+Thinking
+
+NOT memorization.
+
+Avoid
+
+Definition-based questions
+
+Trivial facts
+
+Repeated patterns
+
+Use
+
+PYQ-inspired thinking
+
+Real exam style
+
+Trap options
+
+Concept integration
+
+---
+
+# Reflection Metadata
+
+Every question should include hidden metadata
+
+Concept Name
+
+Difficulty
+
+Marks
+
+Time Weight
+
+Confidence Weight
+
+Weak Concept Tag
+
+Strong Concept Tag
+
+These fields are used by Reflection Engine.
+
+---
+
+# JSON Output Structure
+
+Every generated chapter must follow
+
+{
+  "meta": {},
+  "mindMap": {},
+  "concepts": [],
+  "formulas": [],
+  "examples": [],
+  "conceptQuiz": [],
+  "challengeTest": [],
+  "reflectionRules": {}
+}
+
+No deviation allowed.
+
+---
+
+# AI Restrictions
+
+Never generate copied copyrighted content.
+
+Never copy directly from NCERT or coaching material.
+
+Never fabricate formulas.
+
+Never invent scientific facts.
+
+Never produce low-quality MCQs.
+
+Never repeat identical examples.
+
+Never exceed the specified content length.
+
+---
+
+# Human Review Process
+
+AI generates.
+
+↓
+
+Physics Expert reviews.
+
+↓
+
+Corrections applied.
+
+↓
+
+Internal testing.
+
+↓
+
+Reflection validation.
+
+↓
+
+Publishing.
+
+AI never publishes directly.
+
+---
+
+# Success Criteria
+
+A generated chapter is accepted only if
+
+Mind Map
+
+★★★★★
+
+Concept Cards
+
+★★★★★
+
+Formula Intelligence
+
+★★★★★
+
+Examples
+
+★★★★★
+
+Quiz
+
+★★★★★
+
+Reflection Compatibility
+
+★★★★★
+
+Minimum Quality Score
+
+95/100
+
+---
+
+# Long-Term Vision
+
+PhysicsRishi should be able to generate any future Physics chapter from metadata while maintaining consistent quality, structure, and pedagogical philosophy.
+
+Content generation should become a repeatable engineering process rather than manual writing.
+
+---
+
+# Founder & CTO Principle
+
+We are not generating chapters.
+
+We are generating confidence.
+
+Every generated chapter must leave the student thinking
+
+"I know exactly where I stand, what I need to improve, and what I should do next."
+
+If a generated chapter cannot achieve this objective,
+
+it must be regenerated.

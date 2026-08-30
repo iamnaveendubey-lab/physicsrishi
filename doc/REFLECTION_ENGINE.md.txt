@@ -1,0 +1,721 @@
+# PhysicsRishi Reflection Engine
+Version: 1.0
+Status: Core Product Architecture
+Owner: Founder + CTO
+
+---
+
+# Vision
+
+Reflection is NOT a marksheet.
+
+Reflection is an AI-powered performance diagnosis system.
+
+The purpose of Reflection is to answer one question:
+
+> "What should this student do next to maximize exam performance?"
+
+Marks are only an input.
+
+The Reflection Engine produces a personalized action plan.
+
+---
+
+# Product Philosophy
+
+Every coaching institute tells students
+
+"You scored 72%."
+
+PhysicsRishi tells students
+
+• Why they scored 72%
+
+• Which concepts caused the loss
+
+• How much time is needed to fix them
+
+• What should be studied next
+
+• Whether they are actually exam-ready
+
+Reflection is more valuable than marks.
+
+---
+
+# Reflection Inputs
+
+The Reflection Engine collects data from the complete chapter.
+
+Learning Behaviour
+
+• Mind Map Completion
+• Concept Completion
+• Formula Revision
+• Example Review
+
+Assessment
+
+• Concept Quiz
+• Challenge Test
+
+Performance Analytics
+
+• Correct Answers
+• Incorrect Answers
+• Skipped Questions
+• Time Per Question
+• Question Difficulty
+• Confidence Rating (optional future feature)
+
+Question Metadata
+
+Every question contains
+
+Question ID
+
+Concept
+
+Subconcept
+
+Difficulty
+
+Bloom Level
+
+Marks
+
+Expected Time
+
+Common Mistake Tag
+
+Learning Objective
+
+---
+
+# Reflection Scores
+
+The Reflection Engine calculates six independent scores.
+
+1.
+
+Knowledge Score
+
+Measures
+
+Can the student recall concepts?
+
+Source
+
+Concept Quiz
+
+Range
+
+0–100
+
+---
+
+2.
+
+Application Score
+
+Measures
+
+Can the student apply concepts to numerical problems?
+
+Source
+
+Challenge Test
+
+Range
+
+0–100
+
+---
+
+3.
+
+Accuracy Score
+
+Measures
+
+Correct answers vs total attempted.
+
+Range
+
+0–100
+
+---
+
+4.
+
+Speed Score
+
+Measures
+
+Average solving speed compared to expected exam speed.
+
+Example
+
+Excellent
+
+90+
+
+Good
+
+75+
+
+Needs Improvement
+
+Below 75
+
+---
+
+5.
+
+Consistency Score
+
+Measures
+
+Whether performance remains stable across multiple attempts.
+
+Future versions use historical analytics.
+
+---
+
+6.
+
+Readiness Score
+
+The master score.
+
+This determines chapter mastery.
+
+Readiness is NOT average marks.
+
+Readiness combines
+
+Knowledge
+
+Application
+
+Accuracy
+
+Speed
+
+Completion
+
+Improvement
+
+Range
+
+0–100
+
+---
+
+# Chapter Status
+
+Readiness
+
+95+
+
+Mastered
+
+Ready for Advanced Problems
+
+---
+
+85–94
+
+Exam Ready
+
+Continue Revision
+
+---
+
+70–84
+
+Needs Improvement
+
+Target Weak Concepts
+
+---
+
+50–69
+
+Partial Understanding
+
+Revise Chapter
+
+---
+
+Below 50
+
+Relearn Chapter
+
+---
+
+# Weak Concept Detection
+
+Every wrong question is mapped to
+
+Concept
+
+Subconcept
+
+Mistake Type
+
+The Reflection Engine automatically groups mistakes.
+
+Example
+
+Wrong Questions
+
+3
+
+7
+
+14
+
+21
+
+↓
+
+Common Concept
+
+Significant Figures
+
+↓
+
+Weak Topic Detected
+
+Significant Figures
+
+Student never manually selects weak areas.
+
+System identifies them automatically.
+
+---
+
+# Mistake Classification
+
+Every incorrect answer belongs to exactly one category.
+
+Concept Error
+
+Student does not know concept.
+
+Application Error
+
+Student knows concept but cannot apply.
+
+Calculation Error
+
+Arithmetic mistake.
+
+Formula Error
+
+Wrong formula selected.
+
+Unit Error
+
+Incorrect units.
+
+Dimension Error
+
+Dimensional mistake.
+
+Reading Error
+
+Misread question.
+
+Time Pressure
+
+Question skipped due to lack of time.
+
+Guessing
+
+Random answer.
+
+These mistake categories become powerful analytics.
+
+---
+
+# Strong Area Detection
+
+Reflection should also celebrate strengths.
+
+Example
+
+Excellent Performance
+
+Dimensions
+
+SI Units
+
+Vector Representation
+
+Students should know what NOT to revise.
+
+---
+
+# Confidence Analysis
+
+Reflection should improve confidence.
+
+Never demotivate.
+
+Bad
+
+"You failed."
+
+Good
+
+"You have mastered 78% of this chapter."
+
+Always highlight progress first.
+
+Then weaknesses.
+
+---
+
+# Estimated Exam Readiness
+
+PhysicsRishi predicts readiness.
+
+Example
+
+NEET
+
+High
+
+JEE Main
+
+Moderate
+
+JEE Advanced
+
+Needs Improvement
+
+This prediction should be conservative.
+
+Never overestimate.
+
+---
+
+# Personalized Action Plan
+
+Reflection always ends with actions.
+
+Priority 1
+
+Review Significant Figures
+
+Estimated Time
+
+12 minutes
+
+Priority 2
+
+Revise Error Analysis
+
+Estimated Time
+
+18 minutes
+
+Priority 3
+
+Retake Concept Quiz
+
+Priority 4
+
+Attempt Challenge Test Again
+
+Reflection without action has no value.
+
+---
+
+# AI Mentor Integration
+
+The AI Mentor NEVER starts with
+
+"How can I help?"
+
+Instead
+
+"I noticed that you lost four questions because of Significant Figures."
+
+Conversation should continue using Reflection.
+
+Reflection becomes AI context.
+
+AI should know
+
+Strong Areas
+
+Weak Areas
+
+Mistake Types
+
+Speed Issues
+
+Confidence Level
+
+Previous Attempts
+
+The mentor becomes personal.
+
+---
+
+# Reflection Dashboard
+
+Student sees
+
+--------------------------------
+
+Chapter Readiness
+
+87%
+
+★★★★☆
+
+--------------------------------
+
+Knowledge
+
+92%
+
+Application
+
+81%
+
+Accuracy
+
+86%
+
+Speed
+
+74%
+
+Consistency
+
+88%
+
+--------------------------------
+
+Strong Areas
+
+✓ SI Units
+
+✓ Dimensions
+
+✓ Prefixes
+
+--------------------------------
+
+Weak Areas
+
+⚠ Significant Figures
+
+⚠ Error Analysis
+
+--------------------------------
+
+Most Common Mistake
+
+Calculation Error
+
+--------------------------------
+
+Estimated Marks Improvement
+
++8 to +12
+
+--------------------------------
+
+Recommended Study Time
+
+25 Minutes
+
+--------------------------------
+
+Next Best Action
+
+Review Significant Figures
+
+Retake Concept Quiz
+
+Attempt Challenge Test
+
+Discuss mistakes with AI Mentor
+
+--------------------------------
+
+---
+
+# Multiple Attempt Intelligence
+
+Reflection becomes smarter after every attempt.
+
+Attempt 1
+
+Baseline
+
+↓
+
+Attempt 2
+
+Improvement
+
+↓
+
+Attempt 3
+
+Trend
+
+↓
+
+Attempt 4
+
+Mastery
+
+Students should see improvement over time.
+
+---
+
+# Adaptive Learning Rules
+
+If Concept Quiz
+
+<60
+
+↓
+
+Recommend Concept Revision
+
+If Challenge Test
+
+<70
+
+↓
+
+Recommend Practice
+
+If Speed
+
+Poor
+
+↓
+
+Recommend Timed Practice
+
+If Same Mistake Repeats
+
+↓
+
+Force AI Mentor Discussion
+
+System should automatically guide learning.
+
+---
+
+# Reflection Database Requirements
+
+Store
+
+Attempt Number
+
+Question IDs
+
+Score
+
+Time Taken
+
+Accuracy
+
+Speed
+
+Weak Concepts
+
+Strong Concepts
+
+Mistake Categories
+
+Readiness
+
+Action Plan
+
+Reflection Timestamp
+
+Future versions use this data for analytics.
+
+---
+
+# Future Versions
+
+Version 2
+
+Confidence Tracking
+
+Version 3
+
+Weekly Performance Trends
+
+Version 4
+
+AI Study Planner
+
+Version 5
+
+AIR Prediction
+
+Version 6
+
+Personalized Revision Calendar
+
+---
+
+# Reflection Principles
+
+Reflection must
+
+Explain
+
+Diagnose
+
+Guide
+
+Motivate
+
+Never
+
+Judge
+
+Punish
+
+Discourage
+
+Confuse
+
+Students should leave Reflection thinking
+
+"I know exactly what I should do next."
+
+---
+
+# Founder & CTO Principle
+
+The Reflection Engine is the heart of PhysicsRishi.
+
+Mind Maps teach.
+
+Concepts revise.
+
+Examples train.
+
+Tests measure.
+
+Reflection transforms performance.
+
+If Reflection is exceptional,
+
+PhysicsRishi becomes unforgettable.

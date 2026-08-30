@@ -1,14 +1,4 @@
-import { 
-  collection, 
-  getDocs, 
-  setDoc, 
-  getDoc,
-  doc, 
-  query, 
-  where, 
-  updateDoc 
-} from "firebase/firestore";
-import { db, isMockFirebase } from "./firebase";
+import { supabase } from "@/lib/supabaseClient";
 import { getRegistryDbRecords, getChapterMeta } from "@/data/chapters/registry";
 import type { ClassLevel } from "@/types/chapter";
 
@@ -28,16 +18,18 @@ export interface ChapterProgress {
   conceptsCompleted: boolean;
   formulaSheetCompleted: boolean;
   examplesCompleted: boolean;
-  conceptTestScore: number;      // 0 - 100 percentage
-  competitionTestScore: number;  // 0 - 100 percentage
+  conceptTestScore: number;
+  competitionTestScore: number;
   chapterCompleted: boolean;
 }
 
 const DEFAULT_CHAPTERS: PhysicsChapter[] = getRegistryDbRecords();
 
-function enrichChapterFromRegistry(ch: PhysicsChapter): PhysicsChapter {
-  const meta = getChapterMeta(ch.chapterId);
-  if (!meta) return ch;
+function enrichChapterFromRegistry(chapter: PhysicsChapter): PhysicsChapter {
+  const meta = getChapterMeta(chapter.chapterId);
+
+  if (!meta) return chapter;
+
   return {
     chapterId: meta.globalId,
     title: meta.title,
@@ -48,133 +40,81 @@ function enrichChapterFromRegistry(ch: PhysicsChapter): PhysicsChapter {
   };
 }
 
+function mapDbChapter(row: any): PhysicsChapter {
+  const chapterId =
+    Number(row.class_level) === 11
+      ? Number(row.chapter_number)
+      : 15 + Number(row.chapter_number);
+
+  return {
+    chapterId,
+    title: row.title,
+    order: Number(row.sequence),
+    classLevel: Number(row.class_level) as ClassLevel,
+    classOrder: Number(row.chapter_number),
+    slug: row.slug,
+  };
+}
+function mapDbProgress(row: any): ChapterProgress {
+  return {
+    uid: row.profile_id,
+    chapterId: Number(row.chapter_id),
+
+    mindMapCompleted: Boolean(row.mind_map_completed),
+
+    conceptsCompleted: Boolean(row.concepts_completed),
+
+    formulaSheetCompleted: Boolean(row.formula_sheet_completed),
+
+    examplesCompleted: Boolean(row.examples_completed),
+
+    conceptTestScore: Number(row.concept_test_score),
+
+    competitionTestScore: Number(row.competition_test_score),
+
+    chapterCompleted: Boolean(row.chapter_completed),
+  };
+}
 /**
- * Seeds default chapters if the physicsChapters database is empty.
+ * Chapters are seeded through SQL migrations.
+ * This function is intentionally left as a no-op.
  */
 export async function seedChaptersIfEmpty(): Promise<void> {
-  if (isMockFirebase) {
-    const stored = localStorage.getItem("physicsrishi_mock_chapters");
-    if (!stored) {
-      localStorage.setItem("physicsrishi_mock_chapters", JSON.stringify(DEFAULT_CHAPTERS));
-    }
-    return;
-  }
-
-  if (!db) return;
-
-  try {
-    const chaptersRef = collection(db, "physicsChapters");
-    const snapshot = await getDocs(chaptersRef);
-    
-    if (snapshot.empty) {
-      console.log("Physicsrishi: Seeding default physics chapters into Cloud Firestore...");
-      for (const ch of DEFAULT_CHAPTERS) {
-        await setDoc(doc(db, "physicsChapters", `chapter_${ch.chapterId}`), ch);
-      }
-    }
-  } catch (err) {
-    console.error("Failed to seed chapters in Firestore:", err);
-  }
+  return;
 }
 
 /**
- * Retrieves the complete list of chapters sorted by order.
+ * Returns all chapters sorted exactly as stored in Supabase.
  */
 export async function getChapters(): Promise<PhysicsChapter[]> {
-  if (isMockFirebase) {
-    const stored = localStorage.getItem("physicsrishi_mock_chapters");
-    const parsed: PhysicsChapter[] = stored ? JSON.parse(stored) : DEFAULT_CHAPTERS;
-    return parsed.map(enrichChapterFromRegistry).sort((a, b) => a.order - b.order);
-  }
-
-  if (!db) return [];
-
   try {
-    const snapshot = await getDocs(collection(db, "physicsChapters"));
-    const list: PhysicsChapter[] = [];
-    snapshot.forEach((d) => {
-      list.push(enrichChapterFromRegistry(d.data() as PhysicsChapter));
-    });
-    return list.sort((a, b) => a.order - b.order);
+    const { data, error } = await supabase
+      .from("chapters")
+      .select("*")
+      .order("class_level", { ascending: true })
+      .order("sequence", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      return DEFAULT_CHAPTERS;
+    }
+
+    return data.map(mapDbChapter).map(enrichChapterFromRegistry);
   } catch (err) {
-    console.error("Error fetching chapters:", err);
+    console.error("Error fetching chapters", JSON.stringify(err, null, 2));
+
     return DEFAULT_CHAPTERS;
   }
 }
-
 /**
- * Retrieves progress metrics for a given user and chapter.
+ * Returns progress of a single chapter.
  */
-export async function getChapterProgress(uid: string, chapterId: number): Promise<ChapterProgress> {
-  const defaultProgress: ChapterProgress = {
-    uid,
-    chapterId,
-    mindMapCompleted: false,
-    conceptsCompleted: false,
-    formulaSheetCompleted: false,
-    examplesCompleted: false,
-    conceptTestScore: 0,
-    competitionTestScore: 0,
-    chapterCompleted: false,
-  };
-
-  if (isMockFirebase) {
-    const stored = localStorage.getItem("physicsrishi_mock_chapter_progress");
-    const list: ChapterProgress[] = stored ? JSON.parse(stored) : [];
-    const match = list.find((p) => p.uid === uid && p.chapterId === chapterId);
-    return match || defaultProgress;
-  }
-
-  if (!db) return defaultProgress;
-
-  try {
-    const docRef = doc(db, "chapterProgress", `${uid}_${chapterId}`);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return docSnap.data() as ChapterProgress;
-    }
-    return defaultProgress;
-  } catch (err) {
-    console.error("Error loading chapter progress:", err);
-    return defaultProgress;
-  }
-}
-
-/**
- * Retrieves all chapter progress records for a user to calculate dashboard statistics.
- */
-export async function getAllUserChapterProgress(uid: string): Promise<ChapterProgress[]> {
-  if (isMockFirebase) {
-    const stored = localStorage.getItem("physicsrishi_mock_chapter_progress");
-    const list: ChapterProgress[] = stored ? JSON.parse(stored) : [];
-    return list.filter((p) => p.uid === uid);
-  }
-
-  if (!db) return [];
-
-  try {
-    const q = query(collection(db, "chapterProgress"), where("uid", "==", uid));
-    const snapshot = await getDocs(q);
-    const list: ChapterProgress[] = [];
-    snapshot.forEach((d) => {
-      list.push(d.data() as ChapterProgress);
-    });
-    return list;
-  } catch (err) {
-    console.error("Error fetching all user progress:", err);
-    return [];
-  }
-}
-
-/**
- * Updates dynamic keys in a user's chapterProgress document and tests for completion.
- * Unlocks the next chapter if criteria are satisfied.
- */
-export async function updateChapterProgressFields(
+export async function getChapterProgress(
   uid: string,
   chapterId: number,
-  fields: Partial<ChapterProgress>,
-  currentUserChapter?: number
 ): Promise<ChapterProgress> {
   const defaultProgress: ChapterProgress = {
     uid,
@@ -188,106 +128,132 @@ export async function updateChapterProgressFields(
     chapterCompleted: false,
   };
 
-  let merged: ChapterProgress;
-
-  if (isMockFirebase) {
-    const stored = localStorage.getItem("physicsrishi_mock_chapter_progress");
-    const list: ChapterProgress[] = stored ? JSON.parse(stored) : [];
-    const idx = list.findIndex((p) => p.uid === uid && p.chapterId === chapterId);
-    
-    const existing = idx >= 0 ? list[idx] : defaultProgress;
-    merged = {
-      ...existing,
-      ...fields,
-      uid,
-      chapterId,
-    };
-
-    // Unlocking Rule Check
-    const wasCompleted = existing.chapterCompleted;
-    const isCompletedNow = 
-      merged.mindMapCompleted &&
-      merged.conceptsCompleted &&
-      merged.formulaSheetCompleted &&
-      merged.examplesCompleted &&
-      merged.conceptTestScore >= 60 &&
-      merged.competitionTestScore >= 70;
-
-    merged.chapterCompleted = isCompletedNow;
-
-    if (idx >= 0) {
-      list[idx] = merged;
-    } else {
-      list.push(merged);
-    }
-    localStorage.setItem("physicsrishi_mock_chapter_progress", JSON.stringify(list));
-
-    // Auto-advance if meets criteria and on active chapter
-    const nextChapter = chapterId + 1;
-    const isAdvancing = !wasCompleted && isCompletedNow && currentUserChapter === chapterId;
-
-    if (isAdvancing) {
-      const sessionRaw = localStorage.getItem("physicsrishi_session");
-      if (sessionRaw) {
-        const session = JSON.parse(sessionRaw);
-        session.currentChapter = nextChapter;
-        localStorage.setItem("physicsrishi_session", JSON.stringify(session));
-      }
-
-      const accountsRaw = localStorage.getItem("physicsrishi_mock_accounts");
-      if (accountsRaw) {
-        const accounts = JSON.parse(accountsRaw);
-        const accIdx = accounts.findIndex((a: any) => a.uid === uid);
-        if (accIdx >= 0) {
-          accounts[accIdx].currentChapter = nextChapter;
-          localStorage.setItem("physicsrishi_mock_accounts", JSON.stringify(accounts));
-        }
-      }
-    }
-    return merged;
-  }
-
-  if (!db) return defaultProgress;
-
-  // Live Firebase Mode
   try {
-    const docRef = doc(db, "chapterProgress", `${uid}_${chapterId}`);
-    const docSnap = await getDoc(docRef);
-    
-    const existing = docSnap.exists() ? (docSnap.data() as ChapterProgress) : defaultProgress;
-    merged = {
-      ...existing,
-      ...fields,
-      uid,
-      chapterId,
-    };
+    const { data, error } = await supabase
+      .from("chapter_progress")
+      .select("*")
+      .eq("profile_id", uid)
+      .eq("chapter_id", chapterId)
+      .maybeSingle();
 
-    // Unlocking Rule Check
-    const wasCompleted = existing.chapterCompleted;
-    const isCompletedNow = 
-      merged.mindMapCompleted &&
-      merged.conceptsCompleted &&
-      merged.formulaSheetCompleted &&
-      merged.examplesCompleted &&
-      merged.conceptTestScore >= 60 &&
-      merged.competitionTestScore >= 70;
+    if (error) throw error;
 
-    merged.chapterCompleted = isCompletedNow;
-
-    await setDoc(docRef, merged);
-
-    // Auto-advance
-    const nextChapter = chapterId + 1;
-    const isAdvancing = !wasCompleted && isCompletedNow && currentUserChapter === chapterId;
-
-    if (isAdvancing) {
-      await updateDoc(doc(db, "users", uid), {
-        currentChapter: nextChapter,
-      });
-    }
-    return merged;
+    return data ? mapDbProgress(data) : defaultProgress;
   } catch (err) {
-    console.error("Failed to update database progress:", err);
+    console.error(
+      "Error loading chapter progress",
+      JSON.stringify(err, null, 2),
+    );
+
+    return defaultProgress;
+  }
+}
+
+/**
+ * Returns progress of every chapter for dashboard.
+ */
+export async function getAllUserChapterProgress(
+  uid: string,
+): Promise<ChapterProgress[]> {
+  try {
+    const { data, error } = await supabase
+      .from("chapter_progress")
+      .select("*")
+      .eq("profile_id", uid);
+
+    if (error) throw error;
+
+    return (data ?? []).map(mapDbProgress);
+  } catch (err) {
+    console.error(
+      "Error fetching dashboard progress",
+      JSON.stringify(err, null, 2),
+    );
+
+    return [];
+  }
+}
+/**
+ * Updates progress of a chapter and unlocks the next chapter.
+ */
+export async function updateChapterProgressFields(
+  uid: string,
+  chapterId: number,
+  fields: Partial<ChapterProgress>,
+  currentUserChapter?: number,
+): Promise<ChapterProgress> {
+  const current = await getChapterProgress(uid, chapterId);
+
+  const updated: ChapterProgress = {
+    ...current,
+    ...fields,
+    uid,
+    chapterId,
+  };
+
+  updated.chapterCompleted =
+    updated.mindMapCompleted &&
+    updated.conceptsCompleted &&
+    updated.formulaSheetCompleted &&
+    updated.examplesCompleted &&
+    updated.conceptTestScore >= 60 &&
+    updated.competitionTestScore >= 70;
+
+  const payload = {
+    profile_id: uid,
+    chapter_id: chapterId,
+    mind_map_completed: updated.mindMapCompleted,
+    concepts_completed: updated.conceptsCompleted,
+    formula_sheet_completed: updated.formulaSheetCompleted,
+    examples_completed: updated.examplesCompleted,
+    concept_test_score: updated.conceptTestScore,
+    competition_test_score: updated.competitionTestScore,
+    chapter_completed: updated.chapterCompleted,
+  };
+
+  try {
+    const { data: existing } = await supabase
+      .from("chapter_progress")
+      .select("id")
+      .eq("profile_id", uid)
+      .eq("chapter_id", chapterId)
+      .maybeSingle();
+
+    if (existing) {
+      const { error } = await supabase
+        .from("chapter_progress")
+        .update(payload)
+        .eq("id", existing.id);
+
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from("chapter_progress").insert(payload);
+
+      if (error) throw error;
+    }
+
+    if (updated.chapterCompleted && currentUserChapter === chapterId) {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          current_chapter_number: chapterId + 1,
+        })
+        .eq("id", uid);
+
+      if (error) {
+        console.error(
+          "Failed to unlock next chapter",
+          JSON.stringify(error, null, 2),
+        );
+      }
+    }
+
+    return updated;
+  } catch (err) {
+    console.error(
+      "Failed to update chapter progress",
+      JSON.stringify(err, null, 2),
+    );
     throw err;
   }
 }

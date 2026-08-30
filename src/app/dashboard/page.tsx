@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import {
-  seedChaptersIfEmpty,
   getChapters,
   getAllUserChapterProgress,
   PhysicsChapter,
@@ -25,8 +24,7 @@ export default function Dashboard() {
     const loadData = async () => {
       setDbLoading(true);
       try {
-        // 1. Seed database if empty
-        await seedChaptersIfEmpty();
+        // (removed automatic seeding)
 
         // 2. Fetch sorted chapters
         const fetchedChapters = await getChapters();

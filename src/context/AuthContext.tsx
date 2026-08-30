@@ -1,14 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { 
-  signInWithEmailAndPassword as fbSignIn, 
-  createUserWithEmailAndPassword as fbCreateUser, 
-  signOut as fbSignOut, 
-  onAuthStateChanged 
-} from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { auth, db, isMockFirebase } from "@/lib/firebase";
+import { supabase } from "@/lib/supabaseClient";
 
 export interface UserProfile {
   uid: string;
@@ -26,233 +19,201 @@ interface AuthContextType {
   error: string | null;
   isMockMode: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, exam: string, password: string) => Promise<void>;
+  signup: (
+    name: string,
+    email: string,
+    exam: string,
+    password: string,
+  ) => Promise<void>;
   logout: () => Promise<void>;
   refreshUserProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const mapProfile = (profile: any): UserProfile => ({
+  uid: profile.id,
+  name: profile.name ?? "",
+  email: profile.email ?? "",
+  exam: profile.exam_type ?? profile.exam ?? "jee",
+  subscription: profile.subscription ?? "inactive",
+  currentChapter: Number(
+    profile.current_chapter_number ?? profile.currentChapter ?? 1,
+  ),
+  createdAt: profile.created_at ?? profile.createdAt ?? null,
+});
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize Auth state
-  useEffect(() => {
-    if (isMockFirebase) {
-      // Mock Mode: check localStorage for mock user session
-      const stored = localStorage.getItem("physicsrishi_session");
-      if (stored) {
-        try {
-          setUser(JSON.parse(stored));
-        } catch (e) {
-          localStorage.removeItem("physicsrishi_session");
-        }
-      }
-      setLoading(false);
-      return;
+  const loadUserProfile = async (userId: string) => {
+    const { data, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (profileError) {
+      console.error("Failed to load profile:", profileError.message);
+      return null;
     }
 
-    if (!auth || !db) return;
+    return data ? mapProfile(data) : null;
+  };
 
-    // Firebase Mode: listen to Auth changes
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+  useEffect(() => {
+    let authSubscription: { unsubscribe: () => void } | null = null;
+
+    const initializeAuth = async () => {
       setLoading(true);
       setError(null);
-      
-      if (firebaseUser) {
-        try {
-          const userDocRef = doc(db!, "users", firebaseUser.uid);
-          const userDoc = await getDoc(userDocRef);
-          
-          if (userDoc.exists()) {
-            setUser(userDoc.data() as UserProfile);
-          } else {
-            // Fallback if Auth user exists but Firestore document was not created or deleted
-            const fallbackProfile: UserProfile = {
-              uid: firebaseUser.uid,
-              name: firebaseUser.displayName || "Student",
-              email: firebaseUser.email || "",
-              exam: "jee",
-              subscription: "inactive",
-              currentChapter: 1,
-              createdAt: new Date(),
-            };
-            setUser(fallbackProfile);
-          }
-        } catch (err: any) {
-          console.error("Error fetching Firestore user profile:", err);
-          setError(err.message || "Failed to load user profile");
-        }
+
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
+      if (sessionError) {
+        console.error("Failed to get Supabase session:", sessionError.message);
+      }
+
+      const sessionUser = sessionData?.session?.user;
+      if (sessionUser) {
+        const profile = await loadUserProfile(sessionUser.id);
+        setUser(profile);
       } else {
         setUser(null);
       }
-      setLoading(false);
-    });
 
-    return () => unsubscribe();
+      const { data: listener } = supabase.auth.onAuthStateChange(
+        async (_event, session) => {
+          setLoading(true);
+          setError(null);
+
+          const user = session?.user;
+          if (user) {
+            const profile = await loadUserProfile(user.id);
+            setUser(profile);
+          } else {
+            setUser(null);
+          }
+
+          setLoading(false);
+        },
+      );
+
+      authSubscription = listener?.subscription ?? null;
+      setLoading(false);
+    };
+
+    initializeAuth();
+
+    return () => {
+      authSubscription?.unsubscribe();
+    };
   }, []);
 
-  // Login handler
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
 
-    if (isMockFirebase) {
-      // Mock Mode login: Check if user exists in local accounts list
-      const accountsRaw = localStorage.getItem("physicsrishi_mock_accounts");
-      const accounts = accountsRaw ? JSON.parse(accountsRaw) : [];
-      const match = accounts.find((acc: any) => acc.email === email && acc.password === password);
+    const { data, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      if (match) {
-        const userSession: UserProfile = {
-          uid: match.uid,
-          name: match.name,
-          email: match.email,
-          exam: match.exam,
-          subscription: "inactive",
-          currentChapter: 1,
-          createdAt: match.createdAt,
-        };
-        localStorage.setItem("physicsrishi_session", JSON.stringify(userSession));
-        setUser(userSession);
-        setLoading(false);
-      } else {
-        setLoading(false);
-        throw new Error("Invalid email or password (Mock Mode)");
-      }
-      return;
-    }
-
-    if (!auth) throw new Error("Firebase Auth is not initialized");
-
-    try {
-      await fbSignIn(auth, email, password);
-    } catch (err: any) {
+    if (authError) {
       setLoading(false);
-      throw new Error(err.message || "Failed to log in");
+      throw new Error(authError.message || "Failed to log in");
     }
+
+    const userId = data.session?.user.id;
+    if (!userId) {
+      setLoading(false);
+      throw new Error("Login succeeded but no user session was returned.");
+    }
+
+    const profile = await loadUserProfile(userId);
+    setUser(profile);
+    setLoading(false);
   };
 
-  // Signup handler
-  const signup = async (name: string, email: string, exam: string, password: string) => {
+  const signup = async (
+    name: string,
+    email: string,
+    exam: string,
+    password: string,
+  ) => {
     setLoading(true);
     setError(null);
 
-    if (isMockFirebase) {
-      // Mock Mode signup: Save account locally
-      const accountsRaw = localStorage.getItem("physicsrishi_mock_accounts");
-      const accounts = accountsRaw ? JSON.parse(accountsRaw) : [];
-      
-      if (accounts.some((acc: any) => acc.email === email)) {
-        setLoading(false);
-        throw new Error("Account with this email already exists (Mock Mode)");
+    const { data, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: name,
+          exam_type: exam,
+        },
+      },
+    });
+
+    if (authError) {
+      setLoading(false);
+      throw new Error(authError.message || "Failed to register account");
+    }
+
+    const userId = data.user?.id ?? data.session?.user?.id;
+
+    if (!userId) {
+      setLoading(false);
+      throw new Error("Signup succeeded but no user was returned.");
+    }
+
+    // Wait briefly for the database trigger to create the profile
+    let loadedProfile = null;
+
+    for (let i = 0; i < 5; i++) {
+      loadedProfile = await loadUserProfile(userId);
+
+      if (loadedProfile) {
+        break;
       }
 
-      const uid = `mock_uid_${Math.random().toString(36).substr(2, 9)}`;
-      const newAccount = {
-        uid,
-        name,
-        email,
-        exam,
-        password,
-        createdAt: new Date().toISOString(),
-      };
-      
-      accounts.push(newAccount);
-      localStorage.setItem("physicsrishi_mock_accounts", JSON.stringify(accounts));
-      
-      const userSession: UserProfile = {
-        uid,
-        name,
-        email,
-        exam,
-        subscription: "inactive",
-        currentChapter: 1,
-        createdAt: newAccount.createdAt,
-      };
-      
-      localStorage.setItem("physicsrishi_session", JSON.stringify(userSession));
-      setUser(userSession);
-      setLoading(false);
-      return;
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
-    if (!auth || !db) throw new Error("Firebase SDK is not initialized");
-
-    try {
-      // Create user in Firebase Auth
-      const credential = await fbCreateUser(auth, email, password);
-      const { user: fbUser } = credential;
-
-      const profileData: UserProfile = {
-        uid: fbUser.uid,
-        name,
-        email,
-        exam,
-        subscription: "inactive",
-        currentChapter: 1,
-        createdAt: serverTimestamp(),
-      };
-
-      // Create document in Firestore
-      await setDoc(doc(db!, "users", fbUser.uid), profileData);
-      
-      // Update state
-      setUser(profileData);
-    } catch (err: any) {
-      setLoading(false);
-      throw new Error(err.message || "Failed to register account");
-    }
+    setUser(loadedProfile);
+    setLoading(false);
   };
 
-  // Logout handler
   const logout = async () => {
     setLoading(true);
     setError(null);
 
-    if (isMockFirebase) {
-      localStorage.removeItem("physicsrishi_session");
-      setUser(null);
+    const { error: signOutError } = await supabase.auth.signOut();
+    if (signOutError) {
       setLoading(false);
-      return;
+      throw new Error(signOutError.message || "Failed to log out");
     }
 
-    if (!auth) throw new Error("Firebase Auth is not initialized");
-
-    try {
-      await fbSignOut(auth);
-      setUser(null);
-    } catch (err: any) {
-      setLoading(false);
-      throw new Error(err.message || "Failed to log out");
-    }
+    setUser(null);
+    setLoading(false);
   };
 
   const refreshUserProfile = async () => {
-    if (isMockFirebase) {
-      const stored = localStorage.getItem("physicsrishi_session");
-      if (stored) {
-        try {
-          setUser(JSON.parse(stored));
-        } catch (e) {
-          console.error("Failed to parse mock session during refresh:", e);
-        }
-      }
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.getSession();
+    if (sessionError) {
+      console.error("Failed to refresh session:", sessionError.message);
       return;
     }
 
-    if (!auth || !db || !auth.currentUser) return;
-    
-    try {
-      const userDocRef = doc(db!, "users", auth.currentUser.uid);
-      const userDoc = await getDoc(userDocRef);
-      if (userDoc.exists()) {
-        setUser(userDoc.data() as UserProfile);
-      }
-    } catch (err) {
-      console.error("Failed to refresh live user profile:", err);
+    const userId = sessionData?.session?.user.id;
+    if (!userId) return;
+
+    const profile = await loadUserProfile(userId);
+    if (profile) {
+      setUser(profile);
     }
   };
 
@@ -262,7 +223,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         loading,
         error,
-        isMockMode: isMockFirebase,
+        isMockMode: false,
         login,
         signup,
         logout,
