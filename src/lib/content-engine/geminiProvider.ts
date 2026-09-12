@@ -21,7 +21,11 @@ export class GeminiProvider implements AIProvider {
         temperature: 0.2,
       },
     });
-
+    console.log("===== GEMINI RESPONSE DIAGNOSTICS =====");
+    console.log("response.text:", response.text);
+    console.log("candidates:", response.candidates);
+    console.log("promptFeedback:", response.promptFeedback);
+    console.log("===== END GEMINI RESPONSE DIAGNOSTICS =====");
     //const text = response.text;
 
     //if (!text) {

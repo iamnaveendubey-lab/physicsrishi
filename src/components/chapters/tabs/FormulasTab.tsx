@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { ChapterMeta, FormulaEntry } from "@/types/chapter";
 import ContentPlaceholder from "../shared/ContentPlaceholder";
-
+import MathText from "../shared/MathText";
 interface FormulasTabProps {
   meta: ChapterMeta;
   formulas: FormulaEntry[];
@@ -20,7 +20,9 @@ export default function FormulasTab({
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
 
   if (formulas.length === 0) {
-    return <ContentPlaceholder section="Formula Sheet" chapterTitle={meta.title} />;
+    return (
+      <ContentPlaceholder section="Formula Sheet" chapterTitle={meta.title} />
+    );
   }
 
   const handleToggleLearned = (id: string) => {
@@ -33,16 +35,19 @@ export default function FormulasTab({
 
   const handleBookmark = (id: string) => {
     setBookmarkedIds((prev) =>
-      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id],
     );
   };
 
   return (
     <div className="space-y-8">
       <div className="text-left">
-        <h2 className="font-display font-extrabold text-2xl text-white mb-2">High-Yield Formula Sheet</h2>
+        <h2 className="font-display font-extrabold text-2xl text-white mb-2">
+          High-Yield Formula Sheet
+        </h2>
         <p className="text-slate-400 text-sm">
-          Master essential formulas. Mark each as learned and bookmark high-priority revisions.
+          Master essential formulas. Mark each as learned and bookmark
+          high-priority revisions.
         </p>
         <div className="mt-3 text-xs font-semibold text-neet">
           Formulas Memorized: {learnedFormulaIds.length} of {formulas.length}
@@ -57,12 +62,16 @@ export default function FormulasTab({
             <div
               key={form.id}
               className={`p-6 rounded-3xl border glassmorphism transition-all flex flex-col justify-between ${
-                isLearned ? "border-neet bg-emerald-500/5" : "border-dark-border/40"
+                isLearned
+                  ? "border-neet bg-emerald-500/5"
+                  : "border-dark-border/40"
               }`}
             >
               <div>
                 <div className="flex justify-between items-center mb-4 border-b border-dark-border/20 pb-3">
-                  <h4 className="font-bold text-white text-sm sm:text-base">{form.title}</h4>
+                  <h4 className="font-bold text-white text-sm sm:text-base">
+                    {form.title}
+                  </h4>
                   <button
                     onClick={() => handleBookmark(form.id)}
                     className={`p-1.5 rounded-lg border transition-all ${
@@ -74,9 +83,9 @@ export default function FormulasTab({
                     ★
                   </button>
                 </div>
-                <pre className="font-mono text-xs sm:text-sm text-slate-350 leading-relaxed bg-black/35 p-4 rounded-xl border border-dark-border/30 overflow-x-auto whitespace-pre-wrap">
-                  {form.code}
-                </pre>
+                <div className="text-sm sm:text-base text-slate-200 leading-relaxed bg-black/35 p-4 rounded-xl border border-dark-border/30 overflow-x-auto">
+                  <MathText>{form.code}</MathText>
+                </div>
               </div>
               <div className="mt-6 flex justify-end">
                 <button

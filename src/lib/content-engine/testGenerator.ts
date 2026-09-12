@@ -1,12 +1,12 @@
 import { generateChapter } from "./generateChapter";
 import { unitsMeasurementsSpec } from "./chapterSpecs";
 import { GeminiProvider } from "./geminiProvider";
-
+import { saveChapterContent } from "@/lib/dbAdmin";
 export async function testContentEngine() {
   const provider = new GeminiProvider();
 
   const chapter = await generateChapter(unitsMeasurementsSpec, provider);
-
+  await saveChapterContent(unitsMeasurementsSpec.globalId, chapter);
   console.log("PhysicsRishi Gemini Generation PASSED");
 
   console.log({

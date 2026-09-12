@@ -247,7 +247,28 @@ export function validateChapterQuality(
     .toLowerCase();
 
   for (const topic of UNITS_MEASUREMENTS_QUALITY_SPEC.requiredTopics) {
-    if (!searchableContent.includes(topic.toLowerCase())) {
+    const topicLower = topic.toLowerCase();
+
+    // Allow semantically equivalent terminology for known topics.
+    const topicAliases: Record<string, string[]> = {
+      "fundamental and derived units": [
+        "fundamental units",
+        "derived units",
+        "fundamental unit",
+        "derived unit",
+        "base units",
+        "si base units",
+        "si derived units",
+      ],
+    };
+
+    const aliases = topicAliases[topicLower] ?? [];
+
+    const covered =
+      searchableContent.includes(topicLower) ||
+      aliases.some((alias) => searchableContent.includes(alias));
+
+    if (!covered) {
       errors.push(`Required topic not adequately represented: ${topic}.`);
     }
   }

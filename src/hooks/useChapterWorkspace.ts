@@ -4,12 +4,16 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   getChapterProgress,
+  getChapterContentFromDb,
   updateChapterProgressFields,
   ChapterProgress,
 } from "@/lib/db";
-import { getChapterContent } from "@/data/chapters";
+
 import type { ChapterContentBundle, ChapterTabId } from "@/types/chapter";
-import { CONCEPT_PASS_PERCENT, COMPETITION_PASS_PERCENT } from "@/data/chapters";
+import {
+  CONCEPT_PASS_PERCENT,
+  COMPETITION_PASS_PERCENT,
+} from "@/data/chapters";
 
 export function useChapterWorkspace(chapterId: number) {
   const { user, refreshUserProfile } = useAuth();
@@ -23,7 +27,9 @@ export function useChapterWorkspace(chapterId: number) {
   const [readConceptIds, setReadConceptIds] = useState<string[]>([]);
   const [learnedFormulaIds, setLearnedFormulaIds] = useState<string[]>([]);
   const [reviewedExampleIds, setReviewedExampleIds] = useState<number[]>([]);
-  const [activeMindMapNode, setActiveMindMapNode] = useState<string | null>(null);
+  const [activeMindMapNode, setActiveMindMapNode] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!user) return;
@@ -31,7 +37,14 @@ export function useChapterWorkspace(chapterId: number) {
     const load = async () => {
       setLoading(true);
       try {
-        const bundle = getChapterContent(chapterId);
+        const bundle = await getChapterContentFromDb(chapterId);
+
+        if (!bundle) {
+          throw new Error(
+            `Chapter content is not available in the database for chapter ${chapterId}.`,
+          );
+        }
+
         setContent(bundle);
 
         const prog = await getChapterProgress(user.uid, chapterId);
@@ -67,7 +80,7 @@ export function useChapterWorkspace(chapterId: number) {
           user.uid,
           chapterId,
           fields,
-          user.currentChapter
+          user.currentChapter,
         );
         setProgress(updated);
         await refreshUserProfile();
@@ -75,7 +88,7 @@ export function useChapterWorkspace(chapterId: number) {
         console.error("Database save failed:", err);
       }
     },
-    [user, chapterId, refreshUserProfile]
+    [user, chapterId, refreshUserProfile],
   );
 
   const handleExploreNode = (id: string) => {
@@ -84,7 +97,10 @@ export function useChapterWorkspace(chapterId: number) {
     if (!exploredNodes.includes(id)) {
       const updated = [...exploredNodes, id];
       setExploredNodes(updated);
-      if (updated.length === content.mindMap.nodes.length && content.mindMap.nodes.length > 0) {
+      if (
+        updated.length === content.mindMap.nodes.length &&
+        content.mindMap.nodes.length > 0
+      ) {
         saveProgress({ mindMapCompleted: true });
       }
     }
@@ -95,7 +111,10 @@ export function useChapterWorkspace(chapterId: number) {
     if (!readConceptIds.includes(id)) {
       const updated = [...readConceptIds, id];
       setReadConceptIds(updated);
-      if (updated.length === content.concepts.length && content.concepts.length > 0) {
+      if (
+        updated.length === content.concepts.length &&
+        content.concepts.length > 0
+      ) {
         saveProgress({ conceptsCompleted: true });
       }
     }
@@ -104,7 +123,10 @@ export function useChapterWorkspace(chapterId: number) {
   const handleToggleFormula = (_id: string, nextIds: string[]) => {
     if (!content) return;
     setLearnedFormulaIds(nextIds);
-    if (nextIds.length === content.formulas.length && content.formulas.length > 0) {
+    if (
+      nextIds.length === content.formulas.length &&
+      content.formulas.length > 0
+    ) {
       saveProgress({ formulaSheetCompleted: true });
     }
   };
@@ -114,7 +136,10 @@ export function useChapterWorkspace(chapterId: number) {
     if (!reviewedExampleIds.includes(id)) {
       const updated = [...reviewedExampleIds, id];
       setReviewedExampleIds(updated);
-      if (updated.length === content.examples.length && content.examples.length > 0) {
+      if (
+        updated.length === content.examples.length &&
+        content.examples.length > 0
+      ) {
         saveProgress({ examplesCompleted: true });
       }
     }
@@ -127,8 +152,10 @@ export function useChapterWorkspace(chapterId: number) {
     progress.formulaSheetCompleted &&
     progress.examplesCompleted;
 
-  const isConceptTestPassed = (progress?.conceptTestScore ?? 0) >= CONCEPT_PASS_PERCENT;
-  const isCompetitionTestPassed = (progress?.competitionTestScore ?? 0) >= COMPETITION_PASS_PERCENT;
+  const isConceptTestPassed =
+    (progress?.conceptTestScore ?? 0) >= CONCEPT_PASS_PERCENT;
+  const isCompetitionTestPassed =
+    (progress?.competitionTestScore ?? 0) >= COMPETITION_PASS_PERCENT;
 
   return {
     user,

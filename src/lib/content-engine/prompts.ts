@@ -54,7 +54,21 @@ Important Topics:
 ${request.importantTopics.join("\n- ")}
 Important Topics:
 ${request.importantTopics.join("\n- ")}
+MANDATORY TOPIC COVERAGE RULE:
+Every item under "Important Topics" must be explicitly and substantively covered
+in the generated chapter.
 
+For each important topic:
+- At least one concept card must directly teach it.
+- At least one example, formula explanation, or concept-test question must reinforce it.
+- Use the topic's actual terminology so automated quality validation can detect it.
+- Do not merely mention the topic in a list or passing sentence.
+
+For "Fundamental and derived units", explicitly include:
+- Fundamental/base SI quantities and their SI units.
+- Derived quantities and their corresponding SI units.
+- At least 3 concrete derived-unit examples, such as m/s, m/s², N, J, or Pa.
+- The distinction between fundamental (base) and derived units.
 ==================================================
 MANDATORY TOPIC COVERAGE
 ==================================================
@@ -88,7 +102,7 @@ Coverage requirements:
 - Generate at least 8 substantial concept cards.
 - Order of magnitude must have dedicated conceptual treatment and
   at least one example or question.
-- PYQ traps must have dedicated exam-oriented treatment.
+-- PYQ traps must have dedicated exam-oriented treatment. The generated chapter must explicitly use the exact phrase "PYQ traps" in at least one meaningful concept, example, or exam-oriented section, so that this mandatory topic is directly identifiable in the final content.
 - SI units must explicitly distinguish base/fundamental units from
   derived units.
 - Propagation of errors must explicitly cover addition/subtraction

@@ -74,6 +74,9 @@ export default function Dashboard() {
 
   // Determine current, completed, and next locked chapters
   const currentChapterId = Number(user.currentChapter) || 1;
+  //temporary fix for currentChapterId being 0 or undefined
+  console.log("DASHBOARD CURRENT CHAPTER:", user.currentChapter);
+  //temp
   const currentChapter = chapters.find(
     (ch) => ch.chapterId === currentChapterId,
   );
@@ -488,6 +491,7 @@ export default function Dashboard() {
                         );
                         const isActive = ch.chapterId === currentChapterId;
                         const isLocked = ch.chapterId > currentChapterId;
+
                         const chProgress = progress.find(
                           (p) => p.chapterId === ch.chapterId,
                         );

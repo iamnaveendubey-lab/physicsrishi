@@ -1,7 +1,12 @@
 import { supabase } from "@/lib/supabaseClient";
 import { getRegistryDbRecords, getChapterMeta } from "@/data/chapters/registry";
-import type { ClassLevel } from "@/types/chapter";
+import type { ClassLevel, ChapterContentBundle } from "@/types/chapter";
 
+import {
+  CONCEPT_PASS_PERCENT,
+  COMPETITION_PASS_PERCENT,
+  COMPETITION_DURATION_SEC,
+} from "@/data/chapters/constants";
 export interface PhysicsChapter {
   chapterId: number;
   title: string;
@@ -112,6 +117,82 @@ export async function getChapters(): Promise<PhysicsChapter[]> {
 /**
  * Returns progress of a single chapter.
  */
+/**
+ * Saves generated AI content for a chapter.
+ *
+ * The chapter_content table uses the UUID of the chapters table,
+ * while PhysicsRishi internally identifies chapters by globalId.
+ */
+
+export async function getChapterContentFromDb(
+  chapterId: number,
+): Promise<ChapterContentBundle | null> {
+  try {
+    const classLevel = chapterId <= 15 ? 11 : 12;
+    const chapterNumber = classLevel === 11 ? chapterId : chapterId - 15;
+
+    const { data: chapter, error: chapterError } = await supabase
+      .from("chapters")
+      .select("id")
+      .eq("class_level", classLevel)
+      .eq("chapter_number", chapterNumber)
+      .maybeSingle();
+
+    if (chapterError) {
+      throw chapterError;
+    }
+
+    if (!chapter) {
+      throw new Error(
+        `Database chapter not found for global chapter ID ${chapterId}.`,
+      );
+    }
+
+    const { data, error } = await supabase
+      .from("chapter_content")
+      .select("*")
+      .eq("chapter_id", chapter.id)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      return null;
+    }
+
+    const meta = getChapterMeta(chapterId);
+
+    if (!meta) {
+      throw new Error(
+        `Chapter metadata not found for global chapter ID ${chapterId}.`,
+      );
+    }
+
+    return {
+      meta,
+      mindMap: data.mind_map,
+      concepts: data.concept_cards,
+      formulas: data.formula_sheet,
+      examples: [...(data.neet_examples ?? []), ...(data.jee_examples ?? [])],
+      quizzes: {
+        concept: data.concept_questions ?? [],
+        competition: data.competition_questions ?? [],
+        conceptPassPercent: CONCEPT_PASS_PERCENT,
+        competitionPassPercent: COMPETITION_PASS_PERCENT,
+        competitionDurationSec: COMPETITION_DURATION_SEC,
+      },
+    };
+  } catch (err) {
+    console.error(
+      "Failed to load chapter content from database",
+      JSON.stringify(err, null, 2),
+    );
+
+    return null;
+  }
+}
 export async function getChapterProgress(
   uid: string,
   chapterId: number,
