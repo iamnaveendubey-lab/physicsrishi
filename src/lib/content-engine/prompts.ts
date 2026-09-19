@@ -51,77 +51,74 @@ Learning Objectives:
 ${request.learningObjectives.join("\n- ")}
 
 Important Topics:
-${request.importantTopics.join("\n- ")}
-Important Topics:
-${request.importantTopics.join("\n- ")}
-MANDATORY TOPIC COVERAGE RULE:
-Every item under "Important Topics" must be explicitly and substantively covered
-in the generated chapter.
+${request.importantTopics.map((topic, index) => `${index + 1}. ${topic}`).join("\n")}
 
-For each important topic:
-- At least one concept card must directly teach it.
-- At least one example, formula explanation, or concept-test question must reinforce it.
-- Use the topic's actual terminology so automated quality validation can detect it.
-- Do not merely mention the topic in a list or passing sentence.
-
-For "Fundamental and derived units", explicitly include:
-- Fundamental/base SI quantities and their SI units.
-- Derived quantities and their corresponding SI units.
-- At least 3 concrete derived-unit examples, such as m/s, m/s², N, J, or Pa.
-- The distinction between fundamental (base) and derived units.
 ==================================================
 MANDATORY TOPIC COVERAGE
 ==================================================
 
-Every topic listed under Important Topics is mandatory.
+Every topic listed above is mandatory.
 
 Do NOT treat Important Topics as suggestions.
 
-Every important topic must receive meaningful treatment in the
-generated chapter. A topic is not considered covered merely because
-its name appears once.
+For EVERY important topic:
 
-For Units and Measurements, the following topics MUST be explicitly
-covered:
+1. Give the topic explicit treatment in at least one concept,
+   example, formula explanation, or quiz question.
+2. Use the topic's actual terminology clearly in the generated
+   content.
+3. The treatment must explain or apply the topic, not merely mention
+   its name.
+4. Do not silently omit a topic.
+5. Do not assume that covering a broader related topic automatically
+   covers a specific listed topic.
 
-1. Physical quantities
-2. SI units
-3. Fundamental and derived units
-4. Dimensions
-5. Dimensional analysis
-6. Errors
-7. Propagation of errors
-8. Significant figures
-9. Order of magnitude
-10. Vernier calipers
-11. Screw gauge
-12. PYQ traps
+IMPORTANT:
 
-Coverage requirements:
+- If two related topics are listed separately, they must both be
+  explicitly addressed.
+- For example, "Scalars and vectors", "Vector addition and
+  subtraction", and "Resolution of vectors into components" are
+  separate mandatory topics and must each receive explicit treatment.
+- "Projectile motion" does NOT by itself satisfy "Projectile from an
+  elevated point".
+- "Vector components" does NOT by itself satisfy "Resolution of
+  vectors into components".
+- Do not merge unrelated mandatory topics merely to reduce the number
+  of concepts.
 
-- Generate at least 8 substantial concept cards.
-- Order of magnitude must have dedicated conceptual treatment and
-  at least one example or question.
--- PYQ traps must have dedicated exam-oriented treatment. The generated chapter must explicitly use the exact phrase "PYQ traps" in at least one meaningful concept, example, or exam-oriented section, so that this mandatory topic is directly identifiable in the final content.
-- SI units must explicitly distinguish base/fundamental units from
-  derived units.
-- Propagation of errors must explicitly cover addition/subtraction
-  and multiplication/division/power relations.
+Before producing the final JSON, create an internal coverage checklist
+containing every Important Topic and verify that each one has explicit
+representation in the generated content.
+
+==================================================
+CHAPTER-SPECIFIC REQUIREMENTS
+==================================================
+
+${
+  request.globalId === 1
+    ? `
+UNITS AND MEASUREMENTS:
+
+- Explicitly distinguish fundamental/base SI quantities and units
+  from derived quantities and units.
+- Include at least 3 concrete derived-unit examples.
+- Dimensional analysis must receive dedicated treatment.
+- Error propagation must explicitly cover addition/subtraction and
+  multiplication/division/power relations.
 - Vernier calipers and screw gauge must include least count,
   measurement logic, and zero-error/correction concepts.
-- Do not merge unrelated topics merely to reduce the number of
-  concepts.
-- Do not omit a topic because it is considered "basic".
+- Order of magnitude must have dedicated conceptual treatment and at
+  least one example or question.
+- PYQ traps must have dedicated exam-oriented treatment and the exact
+  phrase "PYQ traps" must appear meaningfully.
+- Use current SI terminology.
+`
+    : ""
+}
 
 Before returning the JSON, verify that every mandatory topic has
 meaningful representation somewhere in the chapter.
-
-Prerequisites:
-${request.prerequisites?.join("\n- ") ?? "None specified"}
-
-Special Instructions:
-${request.specialInstructions?.join("\n- ") ?? "None"}
-
 ==================================================
 CORE PRODUCT PHILOSOPHY
 ==================================================

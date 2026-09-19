@@ -1,4 +1,9 @@
-import { UNITS_MEASUREMENTS_QUALITY_SPEC } from "./chapterQualitySpecs";
+import {
+  UNITS_MEASUREMENTS_QUALITY_SPEC,
+  MOTION_1D_QUALITY_SPEC,
+  MOTION_2D_QUALITY_SPEC,
+  LAWS_OF_MOTION_QUALITY_SPEC,
+} from "./chapterQualitySpecs";
 import type { ChapterContentBundle } from "@/types/chapter";
 
 export interface QualityValidationResult {
@@ -13,7 +18,14 @@ export function validateChapterQuality(
 ): QualityValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
-
+  const qualitySpec =
+    chapter.meta.globalId === 4
+      ? LAWS_OF_MOTION_QUALITY_SPEC
+      : chapter.meta.globalId === 3
+        ? MOTION_2D_QUALITY_SPEC
+        : chapter.meta.globalId === 2
+          ? MOTION_1D_QUALITY_SPEC
+          : UNITS_MEASUREMENTS_QUALITY_SPEC;
   // ------------------------------------------
   // 1. BASIC CHAPTER CHECK
   // ------------------------------------------
@@ -100,13 +112,13 @@ export function validateChapterQuality(
 
   const examples = chapter.examples ?? [];
 
-  if (examples.length < UNITS_MEASUREMENTS_QUALITY_SPEC.minimumExamples) {
+  if (examples.length < qualitySpec.minimumExamples) {
     errors.push(
       `Only ${examples.length} solved examples generated. Minimum required is 5.`,
     );
   }
 
-  if (examples.length > UNITS_MEASUREMENTS_QUALITY_SPEC.maximumExamples) {
+  if (examples.length > qualitySpec.maximumExamples) {
     errors.push(
       `${examples.length} solved examples generated. Maximum allowed is 10.`,
     );
@@ -246,7 +258,7 @@ export function validateChapterQuality(
     .join(" ")
     .toLowerCase();
 
-  for (const topic of UNITS_MEASUREMENTS_QUALITY_SPEC.requiredTopics) {
+  for (const topic of qualitySpec.requiredTopics) {
     const topicLower = topic.toLowerCase();
 
     // Allow semantically equivalent terminology for known topics.
@@ -260,8 +272,126 @@ export function validateChapterQuality(
         "si base units",
         "si derived units",
       ],
-    };
 
+      "position and reference point": [
+        "position",
+        "reference point",
+        "reference frame",
+        "origin",
+      ],
+
+      "distance and displacement": ["distance", "displacement"],
+
+      "speed and velocity": ["speed", "velocity"],
+
+      "average speed": ["average speed"],
+
+      "average velocity": ["average velocity"],
+
+      "instantaneous velocity": ["instantaneous velocity"],
+
+      "uniform motion": ["uniform motion", "constant velocity"],
+
+      "uniformly accelerated motion": [
+        "uniformly accelerated motion",
+        "constant acceleration",
+      ],
+
+      "equations of motion": [
+        "equations of motion",
+        "kinematic equations",
+        "kinematics equations",
+      ],
+
+      "position-time graphs": [
+        "position-time graph",
+        "position time graph",
+        "x-t graph",
+      ],
+
+      "velocity-time graphs": [
+        "velocity-time graph",
+        "velocity time graph",
+        "v-t graph",
+      ],
+
+      "acceleration-time graphs": [
+        "acceleration-time graph",
+        "acceleration time graph",
+        "a-t graph",
+      ],
+
+      "motion with variable acceleration": [
+        "variable acceleration",
+        "varying acceleration",
+      ],
+
+      "piecewise motion": [
+        "piecewise motion",
+        "piecewise",
+        "multi-stage motion",
+      ],
+
+      "relative motion in one dimension": [
+        "relative motion",
+        "relative velocity",
+      ],
+
+      "free-fall": ["free fall", "free-fall"],
+      "scalars and vectors": [
+        "scalar quantities",
+        "vector quantities",
+        "scalar and vector",
+        "scalars and vectors",
+      ],
+
+      "horizontal and vertical components of projectile motion": [
+        "horizontal component",
+        "vertical component",
+        "horizontal and vertical components",
+        "horizontal velocity component",
+        "vertical velocity component",
+      ],
+
+      "vector addition and subtraction": [
+        "vector addition",
+        "vector subtraction",
+        "adding vectors",
+        "subtracting vectors",
+        "addition of vectors",
+        "subtraction of vectors",
+      ],
+
+      "resolution of vectors into components": [
+        "resolution of vectors",
+        "resolving vectors",
+        "resolve vectors",
+        "vector components",
+        "components of a vector",
+      ],
+
+      "vector representation": [
+        "vector representation",
+        "representation of a vector",
+        "geometric representation of a vector",
+        "directed line segment",
+        "vector diagram",
+        "magnitude and direction",
+      ],
+
+      "projectile from an elevated point": [
+        "projectile from height",
+        "projectile from an elevated point",
+        "projectile launched from height",
+        "projectile launched from an elevated point",
+        "projectile from a height",
+        "projectile with initial height",
+        "projectile launched from a height",
+        "projectile launched from a platform",
+        "horizontal projection from height",
+      ],
+      pyq: ["pyq", "previous year question", "previous year questions"],
+    };
     const aliases = topicAliases[topicLower] ?? [];
 
     const covered =
@@ -277,7 +407,7 @@ export function validateChapterQuality(
   // 12. FORBIDDEN ACADEMIC TERMINOLOGY
   // ------------------------------------------
 
-  for (const phrase of UNITS_MEASUREMENTS_QUALITY_SPEC.forbiddenPhrases ?? []) {
+  for (const phrase of qualitySpec.forbiddenPhrases ?? []) {
     if (searchableContent.includes(phrase.toLowerCase())) {
       errors.push(`Forbidden/outdated terminology detected: "${phrase}".`);
     }
@@ -287,9 +417,9 @@ export function validateChapterQuality(
   // 13. GOLD STANDARD CONCEPT COUNT
   // ------------------------------------------
 
-  if (concepts.length < UNITS_MEASUREMENTS_QUALITY_SPEC.minimumConcepts) {
+  if (concepts.length < qualitySpec.minimumConcepts) {
     errors.push(
-      `Gold Standard requires at least ${UNITS_MEASUREMENTS_QUALITY_SPEC.minimumConcepts} concepts. Found ${concepts.length}.`,
+      `Gold Standard requires at least ${qualitySpec.minimumConcepts} concepts. Found ${concepts.length}.`,
     );
   }
   return {
